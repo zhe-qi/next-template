@@ -1,11 +1,12 @@
 import NotFound404 from '@/components/404';
 import MaxWidthWrapper from '@/components/max-width-wrapper';
+import { routing } from '@/lib/i18n-navigation';
 import { ThemeProvider } from 'next-themes';
 import '@/styles/globals.css';
 
 export default async function NotFound() {
   return (
-    <html lang="zh" suppressHydrationWarning>
+    <html lang={routing.defaultLocale} suppressHydrationWarning>
       <body
         className="min-h-screen bg-background antialiased"
       >

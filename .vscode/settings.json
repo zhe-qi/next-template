@@ -68,6 +68,7 @@
     "nextez",
     "prismadb",
     "sonner",
+    "spotlightjs",
     "turbopack"
   ]
 }

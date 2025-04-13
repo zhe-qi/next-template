@@ -1,2 +1,5 @@
 ignoredBuiltDependencies:
+  - '@sentry/cli'
   - esbuild
+  - sharp
+  - simple-git-hooks

@@ -2,18 +2,25 @@
   "name": "next-template",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.8.0",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "preinstall": "npx only-allow pnpm",
+    "dev:spotlight": "pnpx @spotlightjs/spotlight",
+    "dev:next": "next dev --turbopack",
+    "dev": "run-p dev:*",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "migrate": "drizzle-kit generate && drizzle-kit push",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.3.0",
     "@radix-ui/react-slot": "^1.2.0",
+    "@sentry/nextjs": "^9.12.0",
+    "@spotlightjs/spotlight": "^2.12.0",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tailwindcss/postcss": "^4.1.3",
     "babel-plugin-react-compiler": "19.0.0-beta-e993439-20250405",
@@ -53,7 +60,13 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-tailwindcss": "^3.18.0",
     "lint-staged": "^15.5.1",
-    "typescript": "^5.8.3"
+    "npm-run-all2": "^7.0.2",
+    "simple-git-hooks": "^2.12.1",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,mjs,ts,tsx,mts}": [
