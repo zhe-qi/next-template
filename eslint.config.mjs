@@ -18,7 +18,7 @@ export default antfu(
     ignores: [
       'next-env.d.ts',
       'src/components/ui/**/*',
-      'migrations/**/*',
+      'drizzle/**/*',
     ],
   },
   // ...tailwind.configs['flat/recommended'],

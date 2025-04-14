@@ -33,10 +33,12 @@ CREATE TABLE "session" (
 CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
-	"email" text,
-	"emailVerified" timestamp,
+	"username" text,
+	"password" text,
+	"isActive" boolean DEFAULT true,
+	"isAdmin" boolean DEFAULT false,
 	"image" text,
-	CONSTRAINT "user_email_unique" UNIQUE("email")
+	CONSTRAINT "user_username_unique" UNIQUE("username")
 );
 --> statement-breakpoint
 CREATE TABLE "verificationToken" (

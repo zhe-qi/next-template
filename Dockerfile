@@ -19,16 +19,20 @@ FROM base AS builder
 WORKDIR /app
 
 ARG DATABASE_URL
+ARG NEXT_PUBLIC_APP_URL
+ARG SENTRY_AUTH_TOKEN
+ARG NEXT_PUBLIC_SENTRY_DSN
+ARG AUTH_SECRET
 
 ENV DATABASE_URL=${DATABASE_URL}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+ENV AUTH_SECRET=${AUTH_SECRET}
+ENV SKIP_ENV_VALIDATION=true
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Next.js 收集完全匿名的遥测数据用于一般使用情况
-# 了解更多：https://nextjs.org/telemetry
-# 如果要在构建期间禁用遥测，取消下面这行的注释
-ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN npm install -g pnpm
 RUN SKIP_ENV_VALIDATION=1 pnpm run build
@@ -37,32 +41,67 @@ RUN SKIP_ENV_VALIDATION=1 pnpm run build
 FROM base AS runner
 WORKDIR /app
 
-ARG DATABASE_URL
+ARG PORT=3000
 
+ARG DATABASE_URL
+ARG NEXT_PUBLIC_APP_URL
+ARG SENTRY_AUTH_TOKEN
+ARG NEXT_PUBLIC_SENTRY_DSN
+ARG AUTH_SECRET
 
 ENV DATABASE_URL=${DATABASE_URL}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+ENV AUTH_SECRET=${AUTH_SECRET}
+ENV SKIP_ENV_VALIDATION=true
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN apk add --no-cache wget curl
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# 自动利用输出跟踪来减少镜像大小
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Move the drizzle directory to the runtime image
+COPY --from=builder /app/drizzle ./drizzle
+
+# 复制运行脚本
+COPY --from=builder /app/scripts/run.sh ./scripts/run.sh
+RUN chmod +x ./scripts/run.sh
+
+# 安装迁移依赖
+COPY --from=builder /app/drizzle/migrate ./migrate
+COPY --from=builder /app/tsconfig.json ./migrate/tsconfig.json
+
+# 备份应用的node_modules
+RUN mv node_modules _node_modules
+
+# 安装迁移所需的依赖
+WORKDIR /app/migrate
+RUN npm install -g pnpm
+COPY --from=builder /app/drizzle/migrate/package.json ./package.json
+RUN pnpm install
+
+# 恢复应用的node_modules
+WORKDIR /app
+RUN mv _node_modules node_modules
+
+# 设置所有文件的权限
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
-EXPOSE 3000
-
-ENV PORT=3000
+EXPOSE $PORT
+ENV PORT=${PORT}
 ENV HOSTNAME="0.0.0.0"
 
-# server.js 由 next build 从独立输出创建
-# https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
-CMD ["node", "server.js"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT} || exit 1
 
+ENTRYPOINT ["sh", "./scripts/run.sh"]

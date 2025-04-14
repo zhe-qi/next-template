@@ -8,11 +8,14 @@ services:
       args:
         NEXT_PUBLIC_CLIENTVAR: clientvar
         DATABASE_URL: ${DATABASE_URL}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
     working_dir: /app
     ports:
       - '3000:3000'
-    image: national-procurement
+    image: next-template
     env_file:
       - .env
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      - SKIP_ENV_VALIDATION=true
