@@ -1,3 +1,4 @@
+import type { InferSelectModel } from 'drizzle-orm';
 import { env } from '@/lib/env';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -9,5 +10,7 @@ const db = drizzle({
   schema,
   casing: 'snake_case',
 });
+
+export type User = InferSelectModel<typeof schema.users>;
 
 export default db;

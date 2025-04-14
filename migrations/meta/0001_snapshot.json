@@ -1,6 +1,6 @@
 {
-  "id": "6dd023b1-e4b1-49d3-9315-af04a1feedd8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "12ec52fb-c336-4be6-991c-7179c076791c",
+  "prevId": "6dd023b1-e4b1-49d3-9315-af04a1feedd8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -241,17 +241,31 @@
           "primaryKey": false,
           "notNull": false
         },
-        "email": {
-          "name": "email",
+        "username": {
+          "name": "username",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "emailVerified": {
-          "name": "emailVerified",
-          "type": "timestamp",
+        "password": {
+          "name": "password",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "isActive": {
+          "name": "isActive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "isAdmin": {
+          "name": "isAdmin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "image": {
           "name": "image",
@@ -264,11 +278,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "user_username_unique": {
+          "name": "user_username_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "email"
+            "username"
           ]
         }
       },
