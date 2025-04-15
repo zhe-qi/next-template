@@ -1,5 +1,5 @@
 import db from '@/db';
-import { getUserByUsername } from '@/db/queries';
+import { getUserByUsername } from '@/db/data/queries';
 import { users } from '@/db/schema';
 import { hash } from '@node-rs/argon2';
 import { NextResponse } from 'next/server';

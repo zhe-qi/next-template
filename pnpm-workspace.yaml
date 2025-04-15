@@ -1,4 +1,5 @@
 ignoredBuiltDependencies:
+  - '@percy/core'
   - '@sentry/cli'
   - esbuild
   - sharp

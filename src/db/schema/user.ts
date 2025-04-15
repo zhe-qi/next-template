@@ -7,8 +7,10 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { baseTime } from './helpers';
 
 export const users = pgTable('user', {
+  ...baseTime,
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),

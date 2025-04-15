@@ -1,4 +1,4 @@
-import { getUserByUsername } from '@/db/queries';
+import { getUserByUsername } from '@/db/data/queries';
 import { verify } from '@node-rs/argon2';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
