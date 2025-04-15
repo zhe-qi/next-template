@@ -31,6 +31,8 @@ CREATE TABLE "session" (
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"username" text,
