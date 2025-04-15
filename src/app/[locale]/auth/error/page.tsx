@@ -54,7 +54,7 @@ export default async function Error(props: { searchParams: SearchParams }) {
           {errorMessage?.message}
         </h2>
         <Button asChild variant="default" size="sm" className="mt-6">
-          <Link href="/">
+          <Link href="/" prefetch={false}>
             <ArrowLeft className="size-4" />
             返回首页
           </Link>

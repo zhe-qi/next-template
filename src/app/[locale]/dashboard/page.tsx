@@ -1,4 +1,8 @@
 import { auth } from '@/auth';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { HomeIcon, LogOutIcon } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -12,45 +16,73 @@ export default async function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">
-          欢迎回来，
-          {session.user?.name || '用户'}
-        </h1>
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-2xl">
+            欢迎回来，
+            {session.user?.name || '用户'}
+          </CardTitle>
+          <CardDescription>
+            您的个人仪表盘
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md font-medium">用户信息</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">用户ID:</span>
+                  <span className="font-medium">{session.user?.userId}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">用户名:</span>
+                  <span className="font-medium">{session.user?.name}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">状态:</span>
+                  <Badge
+                    variant={session.user?.isActive ? 'default' : 'destructive'}
+                    className={session.user?.isActive ? 'bg-green-500 hover:bg-green-600' : ''}
+                  >
+                    {session.user?.isActive ? '已激活' : '未激活'}
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">角色:</span>
+                  <Badge variant={session.user?.role === 'admin' ? 'default' : 'secondary'}>
+                    {session.user?.role}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
-        <div className="mb-6 overflow-hidden rounded-lg bg-blue-50 p-4 shadow-sm">
-          <h2 className="mb-2 text-lg font-medium text-blue-700">用户信息</h2>
-          <div className="space-y-2 text-sm text-blue-600">
-            <p>
-              <span className="font-medium">用户ID:</span>
-              {' '}
-              {session.user?.userId}
-            </p>
-            <p>
-              <span className="font-medium">用户名:</span>
-              {' '}
-              {session.user?.name}
-            </p>
-            <p>
-              <span className="font-medium">状态:</span>
-              {' '}
-              {session.user?.isActive ? '已激活' : '未激活'}
-            </p>
-            <p>
-              <span className="font-medium">角色:</span>
-              {' '}
-              {session.user?.role}
-            </p>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md font-medium">系统概览</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">上次登录:</span>
+                  <span className="font-medium">{new Date().toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">会话状态:</span>
+                  <Badge variant="outline">活跃</Badge>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
-
-        <div className="flex space-x-4">
-          <Link
-            href="/"
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            返回首页
-          </Link>
+        </CardContent>
+        <CardFooter className="flex space-x-4">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/">
+              <HomeIcon className="mr-2 h-4 w-4" />
+              返回首页
+            </Link>
+          </Button>
 
           <form action={async () => {
             'use server';
@@ -59,15 +91,13 @@ export default async function DashboardPage() {
             await signOut({ redirectTo: '/' });
           }}
           >
-            <button
-              type="submit"
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
+            <Button variant="destructive" size="sm" type="submit">
+              <LogOutIcon className="mr-2 h-4 w-4" />
               登出
-            </button>
+            </Button>
           </form>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
