@@ -1,5 +1,6 @@
 import antfu from '@antfu/eslint-config';
 import nextPlugin from '@next/eslint-plugin-next';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 // import tailwind from 'eslint-plugin-tailwindcss';
 
@@ -22,6 +23,7 @@ export default antfu(
     ],
   },
   // ...tailwind.configs['flat/recommended'],
+  ...pluginQuery.configs['flat/recommended'],
   jsxA11y.flatConfigs.recommended,
   {
     plugins: {
