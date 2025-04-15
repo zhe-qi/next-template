@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Toaster } from '@/components/ui/sonner';
 import { routing } from '@/lib/i18n-navigation';
 import { cn } from '@/lib/utils';
 import { NextIntlClientProvider } from 'next-intl';
@@ -67,6 +68,7 @@ export default async function RootLayout({
             messages={messages}
           >
             {children}
+            <Toaster />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
