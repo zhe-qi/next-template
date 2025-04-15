@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -19,17 +20,26 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
+// 登录用户的mutation函数
+const loginUser = async (credentials: { username: string; password: string }) => {
+  const result = await signIn('credentials', {
+    username: credentials.username,
+    password: credentials.password,
+    redirect: false,
+  });
+
+  if (result?.error) {
+    throw new Error(result.error || '用户名或密码错误');
+  }
+
+  return result;
+};
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-  const [loading, setLoading] = useState(false);
-
-  // 检查是否有注册成功的参数
   const registered = searchParams.get('registered');
-  if (registered === 'true') {
-    toast.success('注册成功，请登录');
-  }
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -39,30 +49,32 @@ function LoginForm() {
     },
   });
 
-  async function onSubmit(data: LoginFormValues) {
-    setLoading(true);
+  // 检查是否有注册成功的参数，仅在useEffect中处理
+  useEffect(() => {
+    if (registered === 'true') {
+      toast.success('注册成功，请登录');
+    }
+  }, [registered]);
 
-    try {
-      const result = await signIn('credentials', {
-        username: data.username,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        toast.error('用户名或密码错误');
-        return;
-      }
-
+  // 使用useMutation钩子
+  const { mutate, isPending } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: () => {
       toast.success('登录成功');
       router.push(callbackUrl);
       router.refresh();
-    } catch (error) {
-      toast.error('登录过程中发生错误');
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : '用户名或密码错误');
       console.error('登录错误:', error);
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  function onSubmit(data: LoginFormValues) {
+    mutate({
+      username: data.username,
+      password: data.password,
+    });
   }
 
   return (
@@ -103,8 +115,8 @@ function LoginForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? '登录中...' : '登录'}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? '登录中...' : '登录'}
               </Button>
             </form>
           </Form>

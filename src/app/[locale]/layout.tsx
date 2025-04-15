@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
+import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { routing } from '@/lib/i18n-navigation';
 import { cn } from '@/lib/utils';
-import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { ThemeProvider } from 'next-themes';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '@/styles/globals.css';
@@ -57,20 +56,10 @@ export default async function RootLayout({
         geistMono.className,
       )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextIntlClientProvider
-            locale={locale}
-            messages={messages}
-          >
-            {children}
-            <Toaster />
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <Providers locale={locale} messages={messages}>
+          {children}
+          <Toaster closeButton />
+        </Providers>
       </body>
     </html>
   );

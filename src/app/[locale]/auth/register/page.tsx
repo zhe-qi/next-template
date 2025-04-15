@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -22,9 +22,27 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
+// 注册用户的mutation函数
+const registerUser = async (userData: { username: string; password: string }) => {
+  const response = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || '注册失败');
+  }
+
+  return data;
+};
+
 export default function RegisterPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -35,37 +53,24 @@ export default function RegisterPage() {
     },
   });
 
-  async function onSubmit(data: RegisterFormValues) {
-    setLoading(true);
-
-    try {
-      // 发送注册请求
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: data.username,
-          password: data.password,
-        }),
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(responseData.message || '注册失败');
-      }
-
-      // 注册成功，跳转到登录页
+  // 使用useMutation钩子
+  const { mutate, isPending } = useMutation({
+    mutationFn: registerUser,
+    onSuccess: () => {
       toast.success('注册成功');
       router.push('/auth/login?registered=true');
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('注册错误:', error);
       toast.error(error instanceof Error ? error.message : '注册过程中发生错误');
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  function onSubmit(data: RegisterFormValues) {
+    mutate({
+      username: data.username,
+      password: data.password,
+    });
   }
 
   return (
@@ -119,8 +124,8 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? '注册中...' : '注册'}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? '注册中...' : '注册'}
               </Button>
             </form>
           </Form>

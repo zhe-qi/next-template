@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   output: 'standalone',
+  webpack: (config) => {
+    if (config.name === 'server') {
+      config.optimization.concatenateModules = false;
+    }
+
+    return config;
+  },
 };
 
 const withNextIntl = createNextIntlPlugin('./src/lib/i18n.ts');
