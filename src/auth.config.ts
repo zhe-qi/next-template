@@ -1,4 +1,4 @@
-import type { User } from '@/db';
+import type { User } from '@/db/schema/user';
 import type { DefaultSession, NextAuthConfig } from 'next-auth';
 import db from '@/db';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';

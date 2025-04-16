@@ -1,7 +1,8 @@
 # syntax=docker.io/docker/dockerfile:1
 
 FROM node:22-alpine AS base
-RUN npm install -g pnpm  # 仅在此处安装一次
+ # 仅在此处安装一次
+RUN npm install -g pnpm
 
 # 仅在需要时安装依赖
 FROM base AS deps

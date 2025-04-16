@@ -1,3 +1,4 @@
+import type { InferSelectModel } from 'drizzle-orm';
 import type { AdapterAccountType } from 'next-auth/adapters';
 import {
   boolean,
@@ -94,3 +95,5 @@ export const authenticators = pgTable(
     },
   ],
 );
+
+export type User = InferSelectModel<typeof users>;
