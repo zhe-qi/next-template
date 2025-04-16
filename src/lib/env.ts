@@ -8,10 +8,10 @@ export const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
     // Database
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_APP_URL: z.url(),
   },
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
