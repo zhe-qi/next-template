@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LayoutDashboard, LogIn, LogOut, UserPlus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import { Count } from './_components/count';
 
 export default async function HomePage() {
   const t = await getTranslations('RootLayout');
@@ -71,10 +72,8 @@ export default async function HomePage() {
                   </div>
                 )}
           </CardContent>
-          <CardFooter className="text-center text-sm text-muted-foreground">
-            <p className="w-full">
-              这是一个使用Next.js和Next Auth v5构建的示例应用程序，展示了如何实现用户名和密码认证。
-            </p>
+          <CardFooter className="flex justify-center items-center text-sm text-muted-foreground">
+            <Count />
           </CardFooter>
         </Card>
       </div>

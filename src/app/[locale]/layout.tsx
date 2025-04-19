@@ -3,6 +3,7 @@ import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { routing } from '@/lib/i18n-navigation';
 import { cn } from '@/lib/utils';
+import { CounterStoreProvider } from '@/providers/counter-store-provider';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
@@ -56,10 +57,12 @@ export default async function RootLayout({
         geistMono.className,
       )}
       >
-        <Providers locale={locale} messages={messages}>
-          {children}
-          <Toaster closeButton />
-        </Providers>
+        <CounterStoreProvider>
+          <Providers locale={locale} messages={messages}>
+            {children}
+            <Toaster closeButton />
+          </Providers>
+        </CounterStoreProvider>
       </body>
     </html>
   );
