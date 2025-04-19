@@ -2,10 +2,6 @@ import { parseISO } from 'date-fns';
 import { toZonedTime, format as tzFormat } from 'date-fns-tz';
 import { zhCN } from 'date-fns/locale';
 
-/**
- * 格式化日期，默认使用上海时区
- * 请勿用在数据库插入数据上，插入之前确保日期是UTC
- */
 export const formatDate = (
   date: Date | string,
   config?: {

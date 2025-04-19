@@ -14,33 +14,33 @@ import { baseTime } from './helpers';
 
 export const users = pgTable('user', {
   ...baseTime,
-  id: uuid('id')
+  id: uuid()
     .primaryKey()
     .$defaultFn(() => uuidV7()),
-  name: text('name'),
-  username: text('username').unique(),
-  password: text('password'),
-  isActive: boolean('isActive').default(true),
-  isAdmin: boolean('isAdmin').default(false),
-  image: text('image'),
+  name: text(),
+  username: text().unique(),
+  password: text(),
+  isActive: boolean().default(true),
+  isAdmin: boolean().default(false),
+  image: text(),
 });
 
 export const accounts = pgTable(
   'account',
   {
-    userId: uuid('userId')
+    userId: uuid()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    type: text('type').$type<AdapterAccountType>().notNull(),
-    provider: text('provider').notNull(),
-    providerAccountId: text('providerAccountId').notNull(),
-    refresh_token: text('refresh_token'),
-    access_token: text('access_token'),
-    expires_at: integer('expires_at'),
-    token_type: text('token_type'),
-    scope: text('scope'),
-    id_token: text('id_token'),
-    session_state: text('session_state'),
+    type: text().$type<AdapterAccountType>().notNull(),
+    provider: text().notNull(),
+    providerAccountId: text().notNull(),
+    refresh_token: text(),
+    access_token: text(),
+    expires_at: integer(),
+    token_type: text(),
+    scope: text(),
+    id_token: text(),
+    session_state: text(),
   },
   account => [
     {
@@ -52,19 +52,19 @@ export const accounts = pgTable(
 );
 
 export const sessions = pgTable('session', {
-  sessionToken: text('sessionToken').primaryKey(),
-  userId: uuid('userId')
+  sessionToken: text().primaryKey(),
+  userId: uuid()
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  expires: timestamp('expires', { mode: 'date' }).notNull(),
+  expires: timestamp({ mode: 'date' }).notNull(),
 });
 
 export const verificationTokens = pgTable(
   'verificationToken',
   {
-    identifier: text('identifier').notNull(),
-    token: text('token').notNull(),
-    expires: timestamp('expires', { mode: 'date' }).notNull(),
+    identifier: text().notNull(),
+    token: text().notNull(),
+    expires: timestamp({ mode: 'date' }).notNull(),
   },
   verificationToken => [
     {
@@ -78,16 +78,16 @@ export const verificationTokens = pgTable(
 export const authenticators = pgTable(
   'authenticator',
   {
-    credentialID: text('credentialID').notNull().unique(),
-    userId: uuid('userId')
+    credentialID: text().notNull().unique(),
+    userId: uuid()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    providerAccountId: text('providerAccountId').notNull(),
-    credentialPublicKey: text('credentialPublicKey').notNull(),
-    counter: integer('counter').notNull(),
-    credentialDeviceType: text('credentialDeviceType').notNull(),
-    credentialBackedUp: boolean('credentialBackedUp').notNull(),
-    transports: text('transports'),
+    providerAccountId: text().notNull(),
+    credentialPublicKey: text().notNull(),
+    counter: integer().notNull(),
+    credentialDeviceType: text().notNull(),
+    credentialBackedUp: boolean().notNull(),
+    transports: text(),
   },
   authenticator => [
     {
