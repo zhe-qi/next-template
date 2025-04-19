@@ -2,10 +2,10 @@ import { formatDate } from '@/utils/helpers';
 import { timestamp } from 'drizzle-orm/pg-core';
 
 export const baseTime = {
-  createdAt: timestamp('created_at', {
+  createdAt: timestamp({
     mode: 'string',
   }).notNull().default(formatDate(new Date())),
-  updatedAt: timestamp('updated_at', {
+  updatedAt: timestamp({
     mode: 'string',
   }).notNull().default(formatDate(new Date())).$onUpdate(() => formatDate(new Date())),
 };
