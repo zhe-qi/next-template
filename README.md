@@ -8,7 +8,8 @@
 - 🌐 **国际化** - 使用 next-intl 实现的多语言支持
 - 🎨 **现代 UI** - 基于 Shadcn UI 和 Tailwind CSS 的美观界面
 - 📊 **数据库集成** - 使用 Drizzle ORM 实现类型安全的数据库操作
-- 🔄 **状态管理** - 基于 TanStack Query 的高效数据获取与缓存
+- 🔄 **请求状态管理** - 基于 TanStack Query 的高效数据获取与缓存
+- 🔄 **状态管理** - 使用 Zustand 实现轻量级且高性能的状态管理
 - 🧪 **测试工具** - 集成 Vitest 单元测试和 Playwright E2E 测试
 - 📦 **Docker 支持** - 优化的 Docker 配置，便于容器化部署
 - 📝 **类型安全** - 完全使用 TypeScript 开发，提供卓越的开发体验
