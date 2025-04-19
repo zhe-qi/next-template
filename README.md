@@ -64,8 +64,14 @@ cp .env.example .env.local
 
 4. 数据库迁移:
 
+**开发环境**:
 ```bash
 pnpm migrate
+```
+
+**生产环境**:
+```bash
+pnpm dlx drizzle-kit migrate
 ```
 
 ### 开发
@@ -107,7 +113,8 @@ docker-compose up -d
 - `pnpm start` - 运行生产版本
 - `pnpm test` - 运行单元测试
 - `pnpm test:e2e` - 运行端到端测试
-- `pnpm migrate` - 运行数据库迁移
+- `pnpm migrate` - 运行数据库迁移（开发环境）
+- `pnpm dlx drizzle-kit migrate` - 运行数据库迁移（生产环境）
 - `pnpm lint` - 检查代码风格
 - `pnpm lint:fix` - 自动修复代码风格问题
 - `pnpm analyze` - 分析构建包大小
@@ -162,6 +169,27 @@ AUTH_SECRET=your-secret-key
 ### 国际化配置
 
 国际化支持由 next-intl 提供。编辑 `src/lib/i18n-navigation.ts` 更改支持的语言。
+
+## 📦 部署指南
+
+### Vercel 部署
+
+虽然本模板支持 Vercel 部署，但请注意：
+
+- Vercel 在国内访问可能较慢，影响用户体验
+- 部署到 Vercel 需要对 Next.js 工程化有深入了解
+- 可能需要针对 Vercel 环境进行额外配置和优化
+
+本模板不提供详细的 Vercel 改造教程，如有需要请参考 [Vercel 官方文档](https://vercel.com/docs/frameworks/nextjs)。
+
+### 自托管部署
+
+自托管是本模板的推荐部署方式，特别适合中国用户：
+
+- 开箱即用，无需复杂改造
+- 使用 Docker 容器化简化部署流程
+- 支持各种云服务商和自有服务器
+- 完全控制应用与数据，无需担心国际网络波动
 
 ## 🔍 Sentry 集成
 
