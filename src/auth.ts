@@ -20,26 +20,31 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         password: { label: 'password', type: 'password' },
       },
       async authorize(credentials): Promise<any> {
-        try {
-          const parsedCredentials = loginSchema.safeParse(credentials);
-          if (parsedCredentials.success) {
-            const { username, password } = parsedCredentials.data;
-            const user = await getUserByUsername(username);
-            if (!user || !user?.password) {
-              return null;
-            }
-            const passwordsMatch = await verify(
-              user.password,
-              password,
-            );
-            if (passwordsMatch) {
-              return user;
-            }
-          }
-          return null;
-        } catch {
+        let user = null;
+
+        // 1. 验证输入
+        const parsedCredentials = loginSchema.safeParse(credentials);
+        if (!parsedCredentials.success) {
           return null;
         }
+
+        // 2. 获取用户
+        const { username, password } = parsedCredentials.data;
+        user = await getUserByUsername(username);
+        if (!user || !user?.password) {
+          return null;
+        }
+
+        // 3. 验证密码
+        const passwordsMatch = await verify(
+          user.password,
+          password,
+        );
+        if (!passwordsMatch) {
+          return null;
+        }
+
+        return user;
       },
     }),
   ],

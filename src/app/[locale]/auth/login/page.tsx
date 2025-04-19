@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 const loginSchema = z.object({
   username: z.string().min(1, '请输入用户名'),
@@ -29,7 +29,7 @@ const loginUser = async (credentials: { username: string; password: string }) =>
   });
 
   if (result?.error) {
-    throw new Error(result.error || '用户名或密码错误');
+    throw new Error('用户名或密码错误');
   }
 
   return result;
@@ -40,6 +40,17 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const registered = searchParams.get('registered');
+
+  useEffect(() => {
+    // FIXME: https://github.com/react-hook-form/resolvers/issues/768 等修复，暂时的解决方案
+    Object.defineProperty(ZodError.prototype, 'errors', {
+      get() {
+        return this.issues;
+      },
+      enumerable: true,
+      configurable: true,
+    });
+  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -66,7 +77,6 @@ function LoginForm() {
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : '用户名或密码错误');
-      console.error('登录错误:', error);
     },
   });
 

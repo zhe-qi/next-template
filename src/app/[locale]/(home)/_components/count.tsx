@@ -9,17 +9,17 @@ export const Count = () => {
   );
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex">
         Count:
         {count}
       </div>
       <hr />
-      <div className="flex gap-2 mt-2">
-        <Button onClick={incrementCount}>
+      <div className="mt-2 flex gap-2">
+        <Button className="flex-1" onClick={incrementCount}>
           Increment Count
         </Button>
-        <Button onClick={decrementCount}>
+        <Button className="flex-1" onClick={decrementCount}>
           Decrement Count
         </Button>
       </div>
