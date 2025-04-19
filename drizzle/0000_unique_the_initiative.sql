@@ -1,5 +1,5 @@
 CREATE TABLE "account" (
-	"userId" text NOT NULL,
+	"userId" uuid NOT NULL,
 	"type" text NOT NULL,
 	"provider" text NOT NULL,
 	"providerAccountId" text NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE "account" (
 --> statement-breakpoint
 CREATE TABLE "authenticator" (
 	"credentialID" text NOT NULL,
-	"userId" text NOT NULL,
+	"userId" uuid NOT NULL,
 	"providerAccountId" text NOT NULL,
 	"credentialPublicKey" text NOT NULL,
 	"counter" integer NOT NULL,
@@ -26,14 +26,14 @@ CREATE TABLE "authenticator" (
 --> statement-breakpoint
 CREATE TABLE "session" (
 	"sessionToken" text PRIMARY KEY NOT NULL,
-	"userId" text NOT NULL,
+	"userId" uuid NOT NULL,
 	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
 	"name" text,
 	"username" text,
 	"password" text,
