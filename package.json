@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.8.1",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
